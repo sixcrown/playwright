@@ -79,13 +79,11 @@ async function sendSpecialCharacter(page, selector, key) {
   await page.click("#userName");
   await page.type("#userName", 'sixcrown');
   await sendSpecialCharacter(page, "#userName", 'Tab');
-  await page.type("#password", 'trojan13');
-  await page.click("#login");
-  await page.click("#password");
-  await page.type("#password", 'trojan13');
+  await page.type("#password", 'Troj@n!3');
+
   await sendSpecialCharacter(page, "#password", 'Enter');
+  await page.waitForTimeout(2000);
   console.log("PRZESZŁO XD");
-  console.log("14 step");
   try{
       const data = await page.screenshot({
       type: "png"
