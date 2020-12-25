@@ -64,36 +64,31 @@ async function sendSpecialCharacter(page, selector, key) {
     }
   });
   await page.goto("https://www.familysearch.org/en/");
-  await page.waitForTimeout(5000);
-  console.log("0 step");
-  selector = await page.waitForSelector('"Agree and Proceed"');
-  await page.click(selector);
-  console.log("1 step");
+  const browser = await playwright.chromium.launch({headless: false});
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto("https://www.familysearch.org/en/");
+  await page.waitForTimeout(4000);
+  let temp;
+  for(let frame of await page.frames())
+  {
+      temp = await frame.$('.call');
+      if(temp)
+      {
+          break;
+      }
+  }    
+  await temp.click();
   await page.click("#signInLink");
-  console.log("2 step");
   await page.click("#userName");
-  console.log("3 step");
   await page.type("#userName", 'sixcrown');
-  console.log("4 step");
   await sendSpecialCharacter(page, "#userName", 'Tab');
-  console.log("5 step");
-  await page.type("#password", 'Troj@n!3');
-  console.log("6 step");
+  await page.type("#password", 'trojan13');
   await page.click("#login");
-  console.log("7 step");
-  await page.click("[aria-controls='search']");
-  console.log("8 step");
-  await page.click("#search > li:nth-child(1) > a");
-  console.log("9 step");
-  await page.click("#surname");
-  console.log("10 step");
-  await page.click("#surname");
-  console.log("11 step");
-  await page.type("#surname", 'kawalkiewicz');
-  console.log("12 step");
-  await sendSpecialCharacter(page, "#surname", 'Enter');
-  console.log("13 step");
-  await page.click("[image-url='/ark:/61903/3:1:3QSQ-G9MB-PVK9?personaUrl=%2Fark%3A%2F61903%2F1%3A1%3AKW16-NPN'] .image-button");
+  await page.click("#password");
+  await page.type("#password", 'trojan13');
+  await sendSpecialCharacter(page, "#password", 'Enter');
+  console.log("PRZESZŁO XD");
   console.log("14 step");
   try{
       const data = await page.screenshot({
