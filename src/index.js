@@ -46,7 +46,13 @@ app.get("/browser/:name", async (req, res) => {
   }
 });
 app.get("/my", async (req, res) => {
-  const browser = await chromium.launch({headless: false});
+async function sendSpecialCharacter(page, selector, key) {
+  const elementHandle = await page.$(selector);
+  await elementHandle.press(key);
+}
+  const browser = await chromium.launch({
+    chromiumSandbox: false
+  });
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto("https://www.familysearch.org/en/");
@@ -79,10 +85,6 @@ app.get("/my", async (req, res) => {
 
 // move to utils.js
 
-async function sendSpecialCharacter(page, selector, key) {
-  const elementHandle = await page.$(selector);
-  await elementHandle.press(key);
-}
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}!`);
