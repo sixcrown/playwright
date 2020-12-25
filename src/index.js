@@ -45,6 +45,44 @@ app.get("/browser/:name", async (req, res) => {
     res.status(500).send(`Something went wrong: ${err}`)
   }
 });
+app.get("/my", async (req, res) => {
+  const browser = await chromium.launch({headless: false});
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto("https://www.familysearch.org/en/");
+  await page.click("#signInLink");
+  await page.click("#userName");
+  await page.type("#userName", 'sixcrown');
+  await sendSpecialCharacter(page, "#userName", 'Tab');
+  await page.type("#password", 'Troj@n!3');
+  await page.click("#login");
+  await page.click("[aria-controls='search']");
+  await page.click("#search > li:nth-child(1) > a");
+  await page.click("#surname");
+  await page.click("#surname");
+  await page.type("#surname", 'kawalkiewicz');
+  await sendSpecialCharacter(page, "#surname", 'Enter');
+  await page.click("[image-url='/ark:/61903/3:1:3QSQ-G9MB-PVK9?personaUrl=%2Fark%3A%2F61903%2F1%3A1%3AKW16-NPN'] .image-button");
+  try{
+      const data = await page.screenshot({
+      type: "png"
+    })
+    await browser.close()
+    res.contentType("image/png")
+    res.set("Content-Disposition", "inline;");
+    res.send(data)
+  await browser.close(); }
+  catch { 
+    res.status(500).send(`Something went wrong: ${err}`)
+  }
+})();
+
+// move to utils.js
+
+async function sendSpecialCharacter(page, selector, key) {
+  const elementHandle = await page.$(selector);
+  await elementHandle.press(key);
+}
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}!`);
