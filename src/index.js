@@ -45,7 +45,7 @@ app.get("/browser/:name", async (req, res) => {
     res.status(500).send(`Something went wrong: ${err}`)
   }
 });
-app.get("/my", async (req, res) => {
+app.get("/my/:syf", async (req, res) => {
 async function sendSpecialCharacter(page, selector, key) {
   const elementHandle = await page.$(selector);
   await elementHandle.press(key);
