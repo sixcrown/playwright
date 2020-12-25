@@ -64,10 +64,6 @@ async function sendSpecialCharacter(page, selector, key) {
     }
   });
   await page.goto("https://www.familysearch.org/en/");
-  const browser = await playwright.chromium.launch({headless: false});
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  await page.goto("https://www.familysearch.org/en/");
   await page.waitForTimeout(4000);
   let temp;
   for(let frame of await page.frames())
