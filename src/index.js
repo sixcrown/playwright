@@ -65,7 +65,7 @@ async function sendSpecialCharacter(page, selector, key) {
   });
   await page.goto("https://www.familysearch.org/en/");
   console.log("0 step");
-  await page.click("/html/body/div[8]/div[1]/div/div[2]/div[2]/a[1]");
+  await page.click("[a class='call' tabindex='0']")
   console.log("1 step");
   await page.click("#signInLink");
   console.log("2 step");
