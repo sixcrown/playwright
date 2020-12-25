@@ -65,7 +65,8 @@ async function sendSpecialCharacter(page, selector, key) {
   });
   await page.goto("https://www.familysearch.org/en/");
   console.log("0 step");
-  await page.click("body > div:nth-child(16) > div.mainContent > div > div:nth-child(2) > div.pdynamicbutton > a.call")
+  selector = await page.waitForSelector('"Agree and Proceed"');
+  await page.click(selector);
   console.log("1 step");
   await page.click("#signInLink");
   console.log("2 step");
