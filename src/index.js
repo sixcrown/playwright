@@ -64,6 +64,7 @@ async function sendSpecialCharacter(page, selector, key) {
     }
   });
   await page.goto("https://www.familysearch.org/en/");
+  await page.waitForTimeout(5000);
   console.log("0 step");
   selector = await page.waitForSelector('"Agree and Proceed"');
   await page.click(selector);
