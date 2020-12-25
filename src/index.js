@@ -81,7 +81,7 @@ async function sendSpecialCharacter(page, selector, key) {
   catch { 
     res.status(500).send(`Something went wrong: ${err}`)
   }
-})();
+});
 
 // move to utils.js
 
