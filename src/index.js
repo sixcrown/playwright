@@ -13,8 +13,8 @@ let input;
 let prawo;
 let lewo;
 let load;
-// app.use(express.static("./public")) //potem do dekomenta
-app.use(express.static("A:/playwright/public"));
+app.use(express.static("./public")) //potem do dekomenta
+//app.use(express.static("A:/playwright/public"));
 const port = process.env.PORT || 3000;
 
 app.get("/browser/:name", async (req, res) => {
