@@ -29,10 +29,7 @@
         </div>
     </section>
     <div class="container pb-5">
-        <div class="notification">
-            By selecting a browser and entering a URL, a headless browser instance will be launched and a screenshot is
-            taken on a Heroku dyno.
-        </div>
+        <div class="notification" id="server-time"></div>
         <div class="notification">
             <div class="field has-addons">
                 <div class="control">
@@ -55,6 +52,16 @@
                 <div class="control">
                     <a class="button is-info" id="btn-my">
                         Make a screenshot on familiy
+                    </a>
+                </div>
+                <div class="control">
+                    <a class="button is-info" id="getDownload">
+                        leck check this
+                    </a>
+                </div>
+                <div class="control">
+                    <a class="button is-info" id="newApproach">
+                        nowe podejscie z websocketem
                     </a>
                 </div>
             </div>
@@ -83,9 +90,18 @@
         </div>
     </footer>
     <script>
+      let HOST = location.origin.replace(/^http/, 'ws')
+      let ws = new WebSocket(HOST);
+      let el;
+      ws.onmessage = (event) => {
+        el = document.getElementById('server-time');
+        el.innerHTML = 'Server time: ' + event.data;
+      };
         (() => {
             const runBtn = document.querySelector("#btn-run")
             const runMy = document.querySelector("#btn-my")
+            const KILL = document.querySelector("#getDownload")
+            const approach = document.querySelector("#newApproach")
             runBtn.addEventListener("click", () => {
                 const browserSelect = document.querySelector("#select-browser")
                 const screenshotUrl = document.querySelector("#input-url")
@@ -103,6 +119,14 @@
 
                 const screenshotElement = document.querySelector("#image-screenshot")
                 screenshotElement.src = `/my/${browserSelect.value}?${searchParams.toString()}`
+            })
+            KILL.addEventListener("click", () => {
+                const screenshotElement = document.querySelector("#image-screenshot")
+                screenshotElement.src = '/getDownload';
+            })
+            approach.addEventListener("click", () => {
+                const screenshotElement = document.querySelector("#image-screenshot")
+                screenshotElement.src = '/newApproach';
             })
         })()
     </script>
