@@ -30,6 +30,7 @@
     </section>
     <div class="container pb-5">
         <div class="notification" id="server-time"></div>
+        <div class="notification" id="init"></div>
         <div class="notification">
             <div class="field has-addons">
                 <div class="control">
@@ -93,10 +94,27 @@
       let HOST = location.origin.replace(/^http/, 'ws')
       let ws = new WebSocket(HOST);
       let el;
+      let init;
       ws.onmessage = (event) => {
         el = document.getElementById('server-time');
-        el.innerHTML = 'Server time: ' + event.data;
+        init = document.getElementById('init');
+        console.log(event.data);
+        if(event.data instanceof Blob){
+            var image = document.createElement('img');
+        let reader=new FileReader()
+        reader.addEventListener('loadend',()=>{
+        let contents=reader.result
+        image.src = contents
+        document.body.appendChild(image);
+})
+reader.readAsDataURL(event.data)
+        }
+        if(event.data  == "init Done"){
+        el.innerHTML = 'inited xD'}
+        else { 
+        init.innerHTML = 'Server time: ' + event.data;}
       };
+
         (() => {
             const runBtn = document.querySelector("#btn-run")
             const runMy = document.querySelector("#btn-my")
@@ -126,7 +144,10 @@
             })
             approach.addEventListener("click", () => {
                 const screenshotElement = document.querySelector("#image-screenshot")
-                screenshotElement.src = '/newApproach';
+                const screenshotUrl = document.querySelector("#input-url")
+                const searchParams = new URLSearchParams()
+                searchParams.set("url", screenshotUrl.value)
+                screenshotElement.src = `/download?${searchParams.toString()}`;
             })
         })()
     </script>
