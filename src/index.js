@@ -607,12 +607,12 @@ const server = app.listen(port, () => {
 async function init() {
   width = 1920; 
   height = 1080 
-  // browser = await chromium.launch({
-  //   chromiumSandbox: false,
-  // });
-    browser = await chromium.launch({
-    headless: false,
+  browser = await chromium.launch({
+    chromiumSandbox: false,
   });
+  //   browser = await chromium.launch({
+  //   headless: false,
+  // });
   //console.log(browser)
  // console.log(browser.proxy);
   context = await browser.newContext( {acceptDownloads: true}).then(
