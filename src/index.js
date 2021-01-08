@@ -740,9 +740,9 @@ wss.on('connection', (ws) => {
    console.log('Client disconnected')
    closeBrowser();
   });
-  ws.on('message', function incoming(data) {
+  ws.on('ping', function incoming(data) {
     ws.send("pong");
-    console.log("ping");
+    console.log("pong");
   });
 });
 async function createNewContext(username,password) {
@@ -832,8 +832,8 @@ async function getPageSelectors() {
   }   
 }
 
-// setInterval(() => {
-//   wss.clients.forEach((client) => {
-//     client.send(new Date().toTimeString());
-//   });
-// }, 1000);
+setInterval(() => {
+  wss.clients.forEach((client) => {
+    client.send("ping");
+  });
+}, 1000);
