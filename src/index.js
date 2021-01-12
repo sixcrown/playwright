@@ -351,18 +351,24 @@ wss.on('connection', (ws) => {
    contextClose().then(()=>{
     closeBrowser();
    });
+  });
+  ws.on('message', function incoming(message) {
+    console.log("heartbeat");
+  });
+  // ws.addEventListener('message',()=>{
+  //   console.log("ping");
+  // })
+  // function xD(){
+  //   console.log("ping");
+  // }
 
-  });
-  ws.on('message', function incoming(data) {
-    ws.send("pong");
-    console.log("ping");
-  });
+
 });
 async function createNewContextwithProxy() {
   var credits = getNextProxy();
   // await context.close();
   context = await browser.newContext({ acceptDownloads: true});
-  context.setDefaultTimeout(60000)
+  context.setDefaultTimeout(180000)
   page = await context.newPage({
     viewport: {
       width,
@@ -404,4 +410,4 @@ setInterval(() => {
   wss.clients.forEach((client) => {
     client.send("ping");
   });
-}, 10000);
+}, 30000);
