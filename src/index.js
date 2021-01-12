@@ -353,8 +353,9 @@ wss.on('connection', (ws) => {
    });
 
   });
-  ws.on('ping', function incoming(data) {
+  ws.on('message', function incoming(data) {
     ws.send("pong");
+    console.log("ping");
   });
 });
 async function createNewContextwithProxy() {
