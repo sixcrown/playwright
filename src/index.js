@@ -6,6 +6,7 @@ const app = express()
 const fs = require('fs')
 const { Server } = require('ws');
 const path = require('path');
+const e = require("express")
 let width;
 let id=0;
 let height;
@@ -95,20 +96,17 @@ catch(error) {//already downloaded all content
 app.use(express.static("./public")) 
 const port = process.env.PORT || 3000;
 async function download() {
-    let ileZdjec = await ile.textContent();
-    ileZdjec = ileZdjec.replace(/\D/g,'');
-    allPhotos = ileZdjec;
     wss.clients.forEach((client) => {
     client.send("amount "+allPhotos);
     });
     await input.fill("1");
     await input.press("Enter")
     
-    for(let i =0;i<ileZdjec-1;i++) {    
+    for(let i =0;i<allPhotos-1;i++) {    
       linkToDownload[i]= "https://www.familysearch.org"+ await load.getAttribute('href');
       await prawo.click()
     }      
-    linkToDownload[ileZdjec-1]= "https://www.familysearch.org"+ await load.getAttribute('href');
+    linkToDownload[allPhotos-1]= "https://www.familysearch.org"+ await load.getAttribute('href');
     allDownloadPromises = new getPromise();
     await downloadChainWithProxy(allPhotos);
     await allDownloadPromises.then(()=>{
@@ -116,6 +114,7 @@ async function download() {
       partialDownloadPromises=[];
       j=-1;
       linkToDownload=[]
+      id=0;
       wss.clients.forEach((client) => {
         client.send("downloadExecuted");
         });
@@ -129,9 +128,18 @@ async function download() {
 
     })
   }
+  app.get("/cancel", async (req, res) => {
+    console.log('Client download canceled')
+    allDownloadPromises.resolve_ex()
+    res.status(200).send("ok");
+  });
+
   app.get("/download", async (req, res) => {
 
-      const url = req.query.url 
+      const url = req.query.url
+      const from = req.query.from
+      const to = req.query.to
+      let err = false;
       try {
       await page.goto(url);
       await page.waitForTimeout(15000);
@@ -146,16 +154,25 @@ async function download() {
           {
               break;
           }
-      }    
+      }
+      let ileZdjec = await ile.textContent();
+      ileZdjec = ileZdjec.replace(/\D/g,'');
+      allPhotos = ileZdjec;
+       
     }
     catch(error){
-      res.status(500).send(`Invalid url`)
+      err = true;
     }
+    if(err===false) {
     res.status(200).send("ok");
     for(let i =0; i<15;i++){
       partialDownloadPromises.push(new getPromise());
     }
     await download();
+  }
+  else {
+    res.status(500).send(`Invalid url`)
+  }
 });
 
 async function downloadChainWithProxy(ileZdjec) {
@@ -250,7 +267,7 @@ async function init() {
       client.send("init step 3");
     })
   );
-  await page.waitForTimeout(4000).then(
+  await page.waitForTimeout(6000).then(
     wss.clients.forEach((client) => {
       client.send("init step 4");
     })
