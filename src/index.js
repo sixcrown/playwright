@@ -76,7 +76,7 @@ async function sendSpecialCharacter(page, selector, key) {
 async function nextDownloadWithProxy(from, to){
   try{
   for(let i=from;i<to;i++){
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(1500);
       await page.click("[name='d']");
       for(let g=0;g<200;g++){
         await page.keyboard.press('Backspace');
@@ -241,12 +241,12 @@ async function init() {
   })
   width = 1920; 
   height = 1080 
-  // browser = await chromium.launch({ //comment this to run on localhost
-  //   chromiumSandbox: false,
-  // });
-    browser = await chromium.launch({ //decomment this to run on localhost
-    headless: false,
+  browser = await chromium.launch({ //comment this to run on localhost
+    chromiumSandbox: false,
   });
+  //   browser = await chromium.launch({ //decomment this to run on localhost
+  //   headless: false,
+  // });
   context = await browser.newContext( {acceptDownloads: true}).then(
     wss.clients.forEach((client) => {
       client.send("init step 1");
@@ -361,6 +361,7 @@ async function createNewContextwithProxy() {
   var credits = getNextProxy();
   // await context.close();
   context = await browser.newContext({ acceptDownloads: true});
+  context.setDefaultTimeout(60000)
   page = await context.newPage({
     viewport: {
       width,
