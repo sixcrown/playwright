@@ -267,6 +267,7 @@ async function init() {
   wss.clients.forEach(client=>{
     client.send("init steps 12");
   })
+  
   width = 1920; 
   height = 1080 
   browser = await chromium.launch({ //comment this to run on localhost
