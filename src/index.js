@@ -6,7 +6,6 @@ const app = express()
 const fs = require('fs')
 const { Server } = require('ws');
 const path = require('path');
-const e = require("express")
 let width;
 let id=0;
 let height;
@@ -76,7 +75,7 @@ async function sendSpecialCharacter(page, selector, key) {
 async function nextDownloadWithProxy(from, to){
   try{
   for(let i=from;i<to;i++){
-      await page.waitForTimeout(1500);
+      await page.waitForTimeout(2000);
       await page.click("[name='d']");
       for(let g=0;g<200;g++){
         await page.keyboard.press('Backspace');
@@ -95,15 +94,19 @@ catch(error) {//already downloaded all content
 
 app.use(express.static("./public")) 
 const port = process.env.PORT || 3000;
-async function download() {
+async function download(from, to) {
+    if(!from) from=1;
+    if(from == 0) from = 1;
+    if(!to) to = allPhotos
+    allPhotos = to - from + 1;
     wss.clients.forEach((client) => {
     client.send("amount "+allPhotos);
     });
-    await input.fill("1");
+    await input.fill(from.toString());
     await input.press("Enter")
-    
     for(let i =0;i<allPhotos-1;i++) {    
       linkToDownload[i]= "https://www.familysearch.org"+ await load.getAttribute('href');
+      console.log( linkToDownload[i]);
       await prawo.click()
     }      
     linkToDownload[allPhotos-1]= "https://www.familysearch.org"+ await load.getAttribute('href');
@@ -130,34 +133,52 @@ async function download() {
   }
   app.get("/cancel", async (req, res) => {
     console.log('Client download canceled')
-    allDownloadPromises.resolve_ex()
+    allDownloadPromises.resolve_ex();
+    res.status(200).send("ok");
+  });
+
+  app.get("/hello", async (req, res) => {
+    console.log('hehe')
     res.status(200).send("ok");
   });
 
   app.get("/download", async (req, res) => {
 
-      const url = req.query.url
-      const from = req.query.from
-      const to = req.query.to
+      const url = req.query.url;
+      const from = parseInt(req.query.from);
+      const to = parseInt(req.query.to);
+      console.log(req.query);
       let err = false;
+      let params = false;
       try {
-      await page.goto(url);
-      await page.waitForTimeout(15000);
-      for(let frame of page.frames())
-      {
-         ile = await frame.$('.afterInput');
-         input = await frame.$('#openSDPagerInputContainer2 > input[type=text]')
-         lewo = await frame.$('div.openSDToolbar.zoomer-default-position > div.open-sd-actions-wrapper.toolbar-position > div.openSDPager > span.previous.pager-icon.fs-civ-circle-chevron-left.enabled');
-         prawo = await frame.$('div.openSDToolbar.zoomer-default-position > div.open-sd-actions-wrapper.toolbar-position > div.openSDPager > span.next.pager-icon.fs-civ-circle-chevron-right.enabled');
-         load = await frame.$('#saveLi > a');
-          if(ile&&input&&lewo&&prawo&&load)
-          {
-              break;
-          }
-      }
+        await page.goto(url);
+        await page.waitForTimeout(15000);
+        for(let frame of page.frames())
+        {
+           ile = await frame.$('.afterInput');
+           input = await frame.$('#openSDPagerInputContainer2 > input[type=text]')
+           lewo = await frame.$('div.openSDToolbar.zoomer-default-position > div.open-sd-actions-wrapper.toolbar-position > div.openSDPager > span.previous.pager-icon.fs-civ-circle-chevron-left.enabled');
+           prawo = await frame.$('div.openSDToolbar.zoomer-default-position > div.open-sd-actions-wrapper.toolbar-position > div.openSDPager > span.next.pager-icon.fs-civ-circle-chevron-right.enabled');
+           load = await frame.$('#saveLi > a');
+            if(ile&&input&&lewo&&prawo&&load)
+            {
+                break;
+            }
+        }
       let ileZdjec = await ile.textContent();
       ileZdjec = ileZdjec.replace(/\D/g,'');
       allPhotos = ileZdjec;
+      if(from>ileZdjec || to>ileZdjec || from>to || from < 0 ){
+        console.log(to);
+        console.log(ileZdjec);
+        console.log(from>ileZdjec);
+        console.log(to>ileZdjec);
+        console.log(from>to);
+        console.log(from<0);
+
+        params = true;
+        throw error;
+      }
        
     }
     catch(error){
@@ -168,10 +189,15 @@ async function download() {
     for(let i =0; i<15;i++){
       partialDownloadPromises.push(new getPromise());
     }
-    await download();
+    await download(from,to);
   }
   else {
+    if(!params){
     res.status(500).send(`Invalid url`)
+  }
+    else { 
+      res.status(501).send(`Invalid params`);
+    }
   }
 });
 
@@ -209,6 +235,8 @@ async function readSendAndDeleteFile(path,index) {
   let promise = getPromise();
   fs.readFile(path, 'base64', (err, data) => { 
     wss.clients.forEach((client) => {
+      client.send("name");
+      client.send(linkToDownload[j]);
       client.send("photo");
       client.send(data);
       client.send("sent");
@@ -368,7 +396,7 @@ async function createNewContextwithProxy() {
   var credits = getNextProxy();
   // await context.close();
   context = await browser.newContext({ acceptDownloads: true});
-  context.setDefaultTimeout(180000)
+  context.setDefaultTimeout(120000);
   page = await context.newPage({
     viewport: {
       width,
