@@ -262,9 +262,9 @@ async function init() {
 
   width = 1920; 
   height = 1080 
-  browser = await chromium.launch({ //comment this to run on localhost
-    chromiumSandbox: false,
-  });
+  browser = await chromium.launch( //comment this to run on localhost
+    { args: ["--no-sandbox"] }
+  );
   //   browser = await chromium.launch({ //decomment this to run on localhost
   //   headless: false,
   // });
