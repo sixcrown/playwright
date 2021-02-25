@@ -106,7 +106,6 @@ async function download(from, to) {
     await input.press("Enter")
     for(let i =0;i<allPhotos-1;i++) {    
       linkToDownload[i]= "https://www.familysearch.org"+ await load.getAttribute('href');
-      console.log( linkToDownload[i]);
       await prawo.click()
     }      
     linkToDownload[allPhotos-1]= "https://www.familysearch.org"+ await load.getAttribute('href');
@@ -169,13 +168,6 @@ async function download(from, to) {
       ileZdjec = ileZdjec.replace(/\D/g,'');
       allPhotos = ileZdjec;
       if(from>ileZdjec || to>ileZdjec || from>to || from < 0 ){
-        console.log(to);
-        console.log(ileZdjec);
-        console.log(from>ileZdjec);
-        console.log(to>ileZdjec);
-        console.log(from>to);
-        console.log(from<0);
-
         params = true;
         throw error;
       }
@@ -267,7 +259,7 @@ async function init() {
   wss.clients.forEach(client=>{
     client.send("init steps 12");
   })
-  
+
   width = 1920; 
   height = 1080 
   browser = await chromium.launch({ //comment this to run on localhost
