@@ -264,13 +264,13 @@ async function init() {
   })
 
   width = 1920; 
-  // height = 1080 
-  // browser = await chromium.launch({ //comment this to run on localhost
-  //   chromiumSandbox: false,
-  // });
-    browser = await chromium.launch({ //decomment this to run on localhost
-    headless: false,
+  height = 1080 
+  browser = await chromium.launch({ //comment this to run on localhost
+    chromiumSandbox: false,
   });
+  //   browser = await chromium.launch({ //decomment this to run on localhost
+  //   headless: false,
+  // });
   context = await browser.newContext( {acceptDownloads: true}).then(
     wss.clients.forEach((client) => {
       client.send("init step 1");
