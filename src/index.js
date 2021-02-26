@@ -77,14 +77,17 @@ async function nextDownloadWithProxy(from, to){
   for(let i=from;i<to;i++){
       await page.waitForTimeout(2000);
       await page.click("[name='d']");
-      for(let g=0;g<200;g++){
+      await page.waitForTimeout(200);
+      for(let g=0;g<250;g++){
         await page.keyboard.press('Backspace');
       }
-      for(let g=0;g<200;g++){
+      for(let g=0;g<250;g++){
         await page.keyboard.press('Delete');
       }
       await page.click("[name='d']");
+      await page.waitForTimeout(200);
       await page.type("[name='d']", linkToDownload[i]);
+      await page.waitForTimeout(200);
       await sendSpecialCharacter(page, "[name='d']", 'Enter');
   }
 }
@@ -132,7 +135,7 @@ async function download(from, to) {
   }
   app.get("/cancel", async (req, res) => {
     console.log('Client download canceled')
-    allDownloadPromises.resolve_ex();
+    if(allDownloadPromises)allDownloadPromises.resolve_ex();
     res.status(200).send("ok");
   });
 
@@ -178,7 +181,7 @@ async function download(from, to) {
     }
     if(err===false) {
     res.status(200).send("ok");
-    for(let i =0; i<15;i++){
+    for(let i =0; i<10;i++){
       partialDownloadPromises.push(new getPromise());
     }
     await download(from,to);
@@ -204,10 +207,10 @@ async function downloadChainWithProxy(ileZdjec) {
          j=j+1;
          readSendAndDeleteFile(downloadPath,i);
        }).then(async ()=>{
-         if(i===14 && j != ileZdjec -1) {
+         if(i===9 && j != ileZdjec -1) {
           Promise.all(partialDownloadPromises).then(async()=>{
             partialDownloadPromises = [];
-            for(let i =0; i<15;i++){
+            for(let i =0; i<10;i++){
               partialDownloadPromises.push(new getPromise());
             }
             return await downloadChainWithProxy(ileZdjec)
@@ -217,7 +220,7 @@ async function downloadChainWithProxy(ileZdjec) {
        });
     });
     if(j<ileZdjec-1){
-      await nextDownloadWithProxy(j+1,j+16);
+      await nextDownloadWithProxy(j+1,j+11);
     }
     })
   })
@@ -261,13 +264,13 @@ async function init() {
   })
 
   width = 1920; 
-  height = 1080 
-  browser = await chromium.launch({ //comment this to run on localhost
-    chromiumSandbox: false,
-  });
-  //   browser = await chromium.launch({ //decomment this to run on localhost
-  //   headless: false,
+  // height = 1080 
+  // browser = await chromium.launch({ //comment this to run on localhost
+  //   chromiumSandbox: false,
   // });
+    browser = await chromium.launch({ //decomment this to run on localhost
+    headless: false,
+  });
   context = await browser.newContext( {acceptDownloads: true}).then(
     wss.clients.forEach((client) => {
       client.send("init step 1");
@@ -376,20 +379,12 @@ wss.on('connection', (ws) => {
   ws.on('message', function incoming(message) {
     console.log("heartbeat");
   });
-  // ws.addEventListener('message',()=>{
-  //   console.log("ping");
-  // })
-  // function xD(){
-  //   console.log("ping");
-  // }
-
 
 });
 async function createNewContextwithProxy() {
   var credits = getNextProxy();
-  // await context.close();
   context = await browser.newContext({ acceptDownloads: true});
-  context.setDefaultTimeout(120000);
+  context.setDefaultTimeout(180000);
   page = await context.newPage({
     viewport: {
       width,
@@ -398,27 +393,31 @@ async function createNewContextwithProxy() {
   })
   try{
   await page.goto("https://www.proxysite.com/");
- 
-
+  await page.waitForTimeout(500);
   await page.click(".server-option");
+  await page.waitForTimeout(300);
   await page.selectOption(".server-option", credits.proxy);
+  await page.waitForTimeout(300);
   await page.click(".server-option", {button: undefined});
+  await page.waitForTimeout(300);
   await page.click(".visual [placeholder='Enter Url']");
+  await page.waitForTimeout(300);
   await page.type(".visual [placeholder='Enter Url']", 'https://www.familysearch.org/en/');
+  await page.waitForTimeout(300);
   await sendSpecialCharacter(page, ".visual [placeholder='Enter Url']", 'Enter');
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(2300);
   await page.click("#signInLink")
-  await page.waitForTimeout(100);
+  await page.waitForTimeout(200);
   await page.click("#userName")
-  await page.waitForTimeout(100);
+  await page.waitForTimeout(200);
   await page.type("#userName", credits.username)
-  await page.waitForTimeout(100);
+  await page.waitForTimeout(200);
   await sendSpecialCharacter(page, "#userName", 'Tab')
-  await page.waitForTimeout(100);
+  await page.waitForTimeout(200);
   await page.type("#password", credits.password)
-  await page.waitForTimeout(100);
+  await page.waitForTimeout(200);
   await sendSpecialCharacter(page, "#password", 'Enter');
-  await page.waitForTimeout(100);
+  await page.waitForTimeout(200);
   }
   catch(error){ 
     wss.clients.forEach((client) => {
