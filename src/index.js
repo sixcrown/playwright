@@ -291,7 +291,7 @@ async function init() {
       client.send("init step 3");
     })
   );
-  await page.waitForTimeout(6000).then(
+  await page.waitForTimeout(8000).then(
     wss.clients.forEach((client) => {
       client.send("init step 4");
     })
