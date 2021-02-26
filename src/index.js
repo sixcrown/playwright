@@ -393,31 +393,31 @@ async function createNewContextwithProxy() {
   })
   try{
   await page.goto("https://www.proxysite.com/");
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(1000);
   await page.click(".server-option");
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(600);
   await page.selectOption(".server-option", credits.proxy);
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(600);
   await page.click(".server-option", {button: undefined});
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(600);
   await page.click(".visual [placeholder='Enter Url']");
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(600);
   await page.type(".visual [placeholder='Enter Url']", 'https://www.familysearch.org/en/');
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(600);
   await sendSpecialCharacter(page, ".visual [placeholder='Enter Url']", 'Enter');
-  await page.waitForTimeout(2300);
+  await page.waitForTimeout(300);
   await page.click("#signInLink")
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(400);
   await page.click("#userName")
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(400);
   await page.type("#userName", credits.username)
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(400);
   await sendSpecialCharacter(page, "#userName", 'Tab')
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(400);
   await page.type("#password", credits.password)
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(400);
   await sendSpecialCharacter(page, "#password", 'Enter');
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(400);
   }
   catch(error){ 
     wss.clients.forEach((client) => {
